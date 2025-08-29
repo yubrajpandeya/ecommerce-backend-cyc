@@ -24,6 +24,7 @@ class ProductFactory extends Factory
             'price' => fake()->randomFloat(2, 5, 500),
             'stock' => fake()->numberBetween(0, 500),
             'is_active' => true,
+            'is_featured' => fake()->boolean(15),
             'is_upcoming' => fake()->boolean(20),
             'available_from' => fake()->optional()->dateTimeBetween('now', '+3 months'),
         ];

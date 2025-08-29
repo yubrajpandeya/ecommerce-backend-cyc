@@ -44,6 +44,10 @@ class ProductResource extends Resource
                     ->default(0),
                 Forms\Components\Toggle::make('is_active')
                     ->required(),
+                Forms\Components\Toggle::make('is_featured')
+                    ->label('Featured')
+                    ->helperText('Mark as featured to show on homepage')
+                    ->default(false),
                 Forms\Components\Toggle::make('is_upcoming')
                     ->required(),
                 Forms\Components\DatePicker::make('available_from'),
@@ -79,6 +83,9 @@ class ProductResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('is_featured')
+                    ->label('Featured')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('is_upcoming')
                     ->boolean(),

@@ -24,6 +24,7 @@ class Product extends Model implements HasMedia
         'price',
         'stock',
         'is_active',
+        'is_featured',
         'is_upcoming',
         'available_from',
     ];
@@ -33,6 +34,7 @@ class Product extends Model implements HasMedia
         return [
             'price' => 'decimal:2',
             'is_active' => 'boolean',
+            'is_featured' => 'boolean',
             'is_upcoming' => 'boolean',
             'available_from' => 'date',
         ];
