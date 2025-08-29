@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "677465d86a4d4e08c89b4c85c1231e11",
+    "content-hash": "966bffc98a2f0bbe853cd56ba80a5468",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -1339,6 +1339,44 @@
             "time": "2025-07-08T20:42:18+00:00"
         },
         {
+            "name": "filament/spatie-laravel-media-library-plugin",
+            "version": "v3.3.37",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/filamentphp/spatie-laravel-media-library-plugin.git",
+                "reference": "bd7c12baf30cc66b2f088bd0257b12071e15addf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/filamentphp/spatie-laravel-media-library-plugin/zipball/bd7c12baf30cc66b2f088bd0257b12071e15addf",
+                "reference": "bd7c12baf30cc66b2f088bd0257b12071e15addf",
+                "shasum": ""
+            },
+            "require": {
+                "filament/support": "self.version",
+                "illuminate/support": "^10.45|^11.0|^12.0",
+                "php": "^8.1",
+                "spatie/laravel-medialibrary": "^10.0|^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Filament\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament support for `spatie/laravel-medialibrary`.",
+            "homepage": "https://github.com/filamentphp/filament",
+            "support": {
+                "issues": "https://github.com/filamentphp/filament/issues",
+                "source": "https://github.com/filamentphp/filament"
+            },
+            "time": "2025-07-08T20:42:14+00:00"
+        },
+        {
             "name": "filament/support",
             "version": "v3.3.37",
             "source": {
@@ -2102,16 +2140,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.26.3",
+            "version": "v12.26.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "1a8e961a1801794c36c243bb610210d0a2bd61cb"
+                "reference": "085a367a32ba86fcfa647bfc796098ae6f795b09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/1a8e961a1801794c36c243bb610210d0a2bd61cb",
-                "reference": "1a8e961a1801794c36c243bb610210d0a2bd61cb",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/085a367a32ba86fcfa647bfc796098ae6f795b09",
+                "reference": "085a367a32ba86fcfa647bfc796098ae6f795b09",
                 "shasum": ""
             },
             "require": {
@@ -2221,7 +2259,7 @@
                 "league/flysystem-read-only": "^3.25.1",
                 "league/flysystem-sftp-v3": "^3.25.1",
                 "mockery/mockery": "^1.6.10",
-                "orchestra/testbench-core": "^10.6.0",
+                "orchestra/testbench-core": "^10.6.3",
                 "pda/pheanstalk": "^5.0.6|^7.0.0",
                 "php-http/discovery": "^1.15",
                 "phpstan/phpstan": "^2.0",
@@ -2315,7 +2353,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-08-27T13:51:06+00:00"
+            "time": "2025-08-29T14:15:53+00:00"
         },
         {
             "name": "laravel/prompts",
