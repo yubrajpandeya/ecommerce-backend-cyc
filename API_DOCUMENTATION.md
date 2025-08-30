@@ -3,7 +3,7 @@
 ## Base URL
 
 ```
-http://localhost:8000/api/v1
+https://api.chooseyourcart.com/api/v1
 ```
 
 ## Response Format
@@ -85,7 +85,7 @@ GET /products?per_page=8&page=2
                 "is_featured": true,
                 "is_upcoming": false,
                 "available_from": null,
-                "image_url": "http://localhost:8000/storage/products/01K3V39HPB2JERPBX4PC3GRXTR.jpg",
+                "image_url": "https://api.chooseyourcart.com/storage/products/01K3V39HPB2JERPBX4PC3GRXTR.jpg",
                 "category": {
                     "id": 1,
                     "name": "Electronics",
@@ -93,10 +93,10 @@ GET /products?per_page=8&page=2
                 }
             }
         ],
-        "first_page_url": "http://localhost:8000/api/v1/products?page=1",
+        "first_page_url": "https://api.chooseyourcart.com/api/v1/products?page=1",
         "from": 1,
         "last_page": 5,
-        "last_page_url": "http://localhost:8000/api/v1/products?page=5",
+        "last_page_url": "https://api.chooseyourcart.com/api/v1/products?page=5",
         "links": [
             {
                 "url": null,
@@ -104,18 +104,18 @@ GET /products?per_page=8&page=2
                 "active": false
             },
             {
-                "url": "http://localhost:8000/api/v1/products?page=1",
+                "url": "https://api.chooseyourcart.com/api/v1/products?page=1",
                 "label": "1",
                 "active": true
             },
             {
-                "url": "http://localhost:8000/api/v1/products?page=2",
+                "url": "https://api.chooseyourcart.com/api/v1/products?page=2",
                 "label": "2",
                 "active": false
             }
         ],
-        "next_page_url": "http://localhost:8000/api/v1/products?page=2",
-        "path": "http://localhost:8000/api/v1/products",
+        "next_page_url": "https://api.chooseyourcart.com/api/v1/products?page=2",
+        "path": "https://api.chooseyourcart.com/api/v1/products",
         "per_page": 12,
         "prev_page_url": null,
         "to": 12,
@@ -202,7 +202,7 @@ GET /products/upcoming?per_page=10
         "is_featured": true,
         "is_upcoming": true,
         "available_from": "2024-09-15",
-        "image_url": "http://localhost:8000/storage/products/03M5X41JPD4LGTRDY6RE5ITZWV.jpg",
+        "image_url": "https://api.chooseyourcart.com/storage/products/03M5X41JPD4LGTRDY6RE5ITZWV.jpg",
         "category": {
           "id": 1,
           "name": "Electronics",
@@ -210,13 +210,13 @@ GET /products/upcoming?per_page=10
         }
       }
     ],
-    "first_page_url": "http://localhost:8000/api/v1/products/upcoming?page=1",
+    "first_page_url": "https://api.chooseyourcart.com/api/v1/products/upcoming?page=1",
     "from": 1,
     "last_page": 2,
-    "last_page_url": "http://localhost:8000/api/v1/products/upcoming?page=2",
+    "last_page_url": "https://api.chooseyourcart.com/api/v1/products/upcoming?page=2",
     "links": [...],
-    "next_page_url": "http://localhost:8000/api/v1/products/upcoming?page=2",
-    "path": "http://localhost:8000/api/v1/products/upcoming",
+    "next_page_url": "https://api.chooseyourcart.com/api/v1/products/upcoming?page=2",
+    "path": "https://api.chooseyourcart.com/api/v1/products/upcoming",
     "per_page": 12,
     "prev_page_url": null,
     "to": 12,
@@ -245,10 +245,10 @@ GET /products/upcoming?per_page=10
     "data": [
         {
             "id": 1,
-            "title": "Summer Sale 2024",
+            "title": "Electronics Tv"
             "link_url": "https://example.com/summer-sale",
             "position": 1,
-            "image_url": "http://localhost:8000/storage/sliders/01K3V39HPB2JERPBX4PC3GRXTR.jpg"
+            "image_url": "https://api.chooseyourcart.com/storage/sliders/01K3V39HPB2JERPBX4PC3GRXTR.jpg"
         }
     ]
 }
