@@ -20,7 +20,7 @@ class OrderController extends Controller
     {
         $orders = auth()->user()->orders()
             ->with(['product.category:id,name,slug'])
-            ->select(['id', 'order_number', 'product_id', 'quantity', 'unit_price', 'total_amount', 'status', 'created_at', 'payment_verified_at'])
+            ->select(['id', 'order_number', 'product_id', 'quantity', 'unit_price', 'total_amount', 'status', 'created_at', 'payment_verified_at','shipping_address','phone_number'])
             ->orderBy('created_at', 'desc')
             ->paginate($request->get('per_page', 10));
 
