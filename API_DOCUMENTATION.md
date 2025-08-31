@@ -457,6 +457,407 @@ GET /products/upcoming?per_page=10
         }
       }
     ],
+    "first_page_url": "http://localhost:8000/api/v1/products/upcoming?page=1",
+    "from": 1,
+    "last_page": 2,
+    "last_page_url": "http://localhost:8000/api/v1/products/upcoming?page=2",
+    "links": [...],
+    "next_page_url": "http://localhost:8000/api/v1/products/upcoming?page=2",
+    "path": "http://localhost:8000/api/v1/products/upcoming",
+    "per_page": 12,
+    "prev_page_url": null,
+    "to": 12,
+    "total": 23
+  }
+}
+```
+
+### Get Product Details
+
+**Endpoint:** `GET /products/{slug}`
+
+**Description:** Get detailed information about a specific product by slug including multiple images.
+
+**Parameters:** Product slug in the URL
+
+**Example Request:**
+
+```
+GET /products/wireless-bluetooth-headphones
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "category_id": 1,
+        "name": "Wireless Bluetooth Headphones",
+        "slug": "wireless-bluetooth-headphones",
+        "description": "High-quality wireless headphones with noise cancellation and premium sound quality. Perfect for music lovers and professionals.",
+        "price": "2999.00",
+        "stock": 50,
+        "is_featured": true,
+        "is_upcoming": false,
+        "available_from": null,
+        "created_at": "2024-01-15T10:30:00Z",
+        "updated_at": "2024-01-15T10:30:00Z",
+        "images": [
+            {
+                "id": 1,
+                "name": "headphones-main",
+                "url": "http://localhost:8000/storage/products/01K3V39HPB2JERPBX4PC3GRXTR.jpg",
+                "size": 245760
+            },
+            {
+                "id": 2,
+                "name": "headphones-side",
+                "url": "http://localhost:8000/storage/products/02L4W40IPC3KFSQCY5QD4HSYUS.jpg",
+                "size": 198450
+            }
+        ],
+        "image_url": "http://localhost:8000/storage/products/01K3V39HPB2JERPBX4PC3GRXTR.jpg",
+        "category": {
+            "id": 1,
+            "name": "Electronics",
+            "slug": "electronics"
+        }
+    }
+}
+```
+
+---
+
+## Categories API
+
+### Get Active Categories
+
+**Endpoint:** `GET /categories`
+
+**Description:** Retrieve all active categories for the frontend navigation and filtering.
+
+**Parameters:** None
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "name": "Electronics",
+            "slug": "electronics",
+            "description": "Latest electronic gadgets and devices"
+        }
+    ]
+}
+```
+
+### Get Products by Category
+
+**Endpoint:** GET /categories/{slug}/products`
+
+**Description:** Get all active products belonging to a specific category.
+
+**Parameters:** Category ID or slug in the URL
+
+**Query Parameters:**
+
+-   `per_page` (optional): Number of products per page (default: 12)
+-   `page` (optional): Page number (default: 1)
+
+**Example Requests:**
+
+```
+GET /categories/1/products
+GET /categories/electronics/products?per_page=8
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 1,
+        "category_id": 1,
+        "name": "Wireless Bluetooth Headphones",
+        "slug": "wireless-bluetooth-headphones",
+        "description": "High-quality wireless headphones with noise cancellation",
+        "price": "2999.00",
+        "stock": 50,
+        "is_featured": true,
+        "is_upcoming": false,
+        "available_from": null,
+        "image_url": "http://localhost:8000/storage/products/01K3V39HPB2JERPBX4PC3GRXTR.jpg"
+      }
+    ],
+    "first_page_url": "http://localhost:8000/api/v1/categories/electronics/products?page=1",
+    "from": 1,
+    "last_page": 3,
+    "last_page_url": "http://localhost:8000/api/v1/categories/electronics/products?page=3",
+    "links": [...],
+    "next_page_url": "http://localhost:8000/api/v1/categories/electronics/products?page=2",
+    "path": "http://localhost:8000/api/v1/categories/electronics/products",
+    "per_page": 12,
+    "prev_page_url": null,
+    "to": 12,
+    "total": 35
+  },
+  "category": {
+    "id": 1,
+    "name": "Electronics",
+    "slug": "electronics",
+    "description": "Latest electronic gadgets and devices"
+  }
+}
+```
+
+---
+
+## Orders API
+
+### Get User Orders
+
+**Endpoint:** `GET /orders`
+
+**Description:** Get authenticated user's order history.
+
+**Headers:**
+
+```
+Authorization: Bearer {token}
+```
+
+**Query Parameters:**
+
+-   `per_page` (optional): Number of orders per page (default: 10)
+-   `page` (optional): Page number (default: 1)
+
+**Example Request:**
+
+```
+GET /orders?per_page=5
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 1,
+        "order_number": "ORD-20240115-ABC123",
+        "product_id": 1,
+        "quantity": 2,
+        "unit_price": "2999.00",
+        "total_amount": "5998.00",
+        "status": "payment_verification",
+        "created_at": "2024-01-15T10:30:00Z",
+        "payment_verified_at": null,
+        "product_name": "Wireless Bluetooth Headphones",
+        "product_slug": "wireless-bluetooth-headphones",
+        "product_image": "http://localhost:8000/storage/products/01K3V39HPB2JERPBX4PC3GRXTR.jpg",
+        "category_name": "Electronics",
+        "payment_screenshot_url": "http://localhost:8000/storage/payment-screenshots/01K3V39HPB2JERPBX4PC3GRXTR.jpg"
+      }
+    ],
+    "first_page_url": "http://localhost:8000/api/v1/orders?page=1",
+    "from": 1,
+    "last_page": 2,
+    "last_page_url": "http://localhost:8000/api/v1/orders?page=2",
+    "links": [...],
+    "next_page_url": "http://localhost:8000/api/v1/orders?page=2",
+    "path": "http://localhost:8000/api/v1/orders",
+    "per_page": 10,
+    "prev_page_url": null,
+    "to": 10,
+    "total": 15
+  }
+}
+```
+
+### Create Order
+
+**Endpoint:** `POST /orders`
+
+**Description:** Create a new order with payment screenshot upload.
+
+**Headers:**
+
+```
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+```
+
+**Request Body (Form Data):**
+
+```
+product_id: 1
+quantity: 2
+shipping_address: "123 Main St, City, State 12345"
+phone_number: "+1234567890"
+notes: "Please deliver between 9 AM - 5 PM"
+payment_screenshot: [uploaded file - image]
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "message": "Order created successfully. Please wait for payment verification.",
+    "data": {
+        "order": {
+            "id": 1,
+            "order_number": "ORD-20240115-ABC123",
+            "total_amount": "5998.00",
+            "status": "payment_verification",
+            "payment_screenshot_url": "http://localhost:8000/storage/payment-screenshots/01K3V39HPB2JERPBX4PC3GRXTR.jpg"
+        }
+    }
+}
+```
+
+### Get Order Details
+
+**Endpoint:** `GET /orders/{id}`
+
+**Description:** Get detailed information about a specific order.
+
+**Headers:**
+
+```
+Authorization: Bearer {token}
+```
+
+**Parameters:** Order ID in the URL
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "order_number": "ORD-20240115-ABC123",
+        "user_id": 1,
+        "product_id": 1,
+        "quantity": 2,
+        "unit_price": "2999.00",
+        "total_amount": "5998.00",
+        "status": "confirmed",
+        "shipping_address": "123 Main St, City, State 12345",
+        "phone_number": "+1234567890",
+        "notes": "Please deliver between 9 AM - 5 PM",
+        "payment_verified_at": "2024-01-15T11:00:00Z",
+        "admin_notes": "Payment verified successfully",
+        "created_at": "2024-01-15T10:30:00Z",
+        "updated_at": "2024-01-15T11:00:00Z",
+        "product_name": "Wireless Bluetooth Headphones",
+        "product_slug": "wireless-bluetooth-headphones",
+        "product_image": "http://localhost:8000/storage/products/01K3V39HPB2JERPBX4PC3GRXTR.jpg",
+        "category_name": "Electronics",
+        "payment_screenshot_url": "http://localhost:8000/storage/payment-screenshots/01K3V39HPB2JERPBX4PC3GRXTR.jpg",
+        "verifier": {
+            "id": 2,
+            "name": "Admin User",
+            "email": "admin@chooseyourcart.com"
+        }
+    }
+}
+```
+
+### Cancel Order
+
+**Endpoint:** `POST /orders/{id}/cancel`
+
+**Description:** Cancel an order (only if status is pending or payment_verification).
+
+**Headers:**
+
+```
+Authorization: Bearer {token}
+```
+
+**Parameters:** Order ID in the URL
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "message": "Order cancelled successfully."
+}
+```
+
+---
+
+## Order Status Values
+
+-   `pending` - Order created, awaiting payment
+-   `payment_verification` - Payment submitted, awaiting admin verification
+-   `confirmed` - Payment verified, order confirmed
+-   `processing` - Order being prepared for shipping
+-   `shipped` - Order has been shipped
+-   `delivered` - Order has been delivered
+-   `cancelled` - Order has been cancelled
+
+---
+
+## Sliders API
+
+**Endpoint:** `GET /products/upcoming`
+
+**Description:** Retrieve products marked as upcoming, ordered by availability date.
+
+**Query Parameters:**
+
+-   `per_page` (optional): Number of products per page (default: 12)
+-   `page` (optional): Page number (default: 1)
+
+**Example Request:**
+
+```
+GET /products/upcoming?per_page=10
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 15,
+        "category_id": 1,
+        "name": "iPhone 16 Pro",
+        "slug": "iphone-16-pro",
+        "description": "Latest iPhone with advanced features",
+        "price": "129999.00",
+        "stock": 0,
+        "is_featured": true,
+        "is_upcoming": true,
+        "available_from": "2024-09-15",
+        "image_url": "http://localhost:8000/storage/products/03M5X41JPD4LGTRDY6RE5ITZWV.jpg",
+        "category": {
+          "id": 1,
+          "name": "Electronics",
+          "slug": "electronics"
+        }
+      }
+    ],
             "first_page_url": "http://localhost:8000/api/v1/products/upcoming?page=1",
         "from": 1,
         "last_page": 2,
@@ -618,13 +1019,25 @@ Error responses follow this format:
 
 8. **Stock**: Products with `stock: 0` should show "Out of Stock" messaging.
 
-9. **Authentication**: All protected endpoints require `Authorization: Bearer {token}` header. Store tokens securely in localStorage/sessionStorage.
+9. **Product Details**: Use product slug in the URL format `/products/{slug}`. The response includes multiple images array for product galleries.
 
-10. **Token Management**: After password change, user must login again as all existing tokens are revoked for security.
+10. **Category Products**: Filter products by category using either r slug. Useful for category pages.
 
-11. **Password Reset**: The reset URL format is: `http://localhost:3000/reset-password?token={token}&email={email}`
+11. **Authentication**: All protected endpoints require `Authorization: Bearer {token}` header. Store tokens securely in localStorage/sessionStorage.
 
-12. **Email Verification**: Currently not implemented but can be added later if needed.
+12. **Token Management**: After password change, user must login again as all existing tokens are revoked for security.
+
+13. **Password Reset**: The reset URL format is: `http://localhost:3000/reset-password?token={token}&email={email}`
+
+14. **Order Management**: Orders require payment screenshot upload. Status flows: pending → payment_verification → confirmed → processing → shipped → delivered.
+
+15. **Order Cancellation**: Users can only cancel orders in 'pending' or 'payment_verification' status.
+
+16. **Payment Verification**: Admins verify payments through Filament admin panel before processing orders.
+
+17. **Stock Management**: Product stock is automatically reduced when orders are created and restored when cancelled.
+
+18. **Email Verification**: Currently not implemented but can be added later if needed.
 
 ## Authentication Flow Examples
 
@@ -681,4 +1094,52 @@ await fetch("/api/v1/auth/reset-password", {
         password_confirmation: "newpassword123",
     }),
 });
+```
+
+### Complete Order Flow
+
+```javascript
+// 1. Get product details
+const product = await fetch(
+    "/api/v1/products/wireless-bluetooth-headphones"
+).then((r) => r.json());
+
+// 2. Create order with payment screenshot
+const formData = new FormData();
+formData.append("product_id", "1");
+formData.append("quantity", "2");
+formData.append("shipping_address", "123 Main St, City, State 12345");
+formData.append("phone_number", "+1234567890");
+formData.append("notes", "Please deliver between 9 AM - 5 PM");
+formData.append("payment_screenshot", paymentFile); // File object
+
+const orderResponse = await fetch("/api/v1/orders", {
+    method: "POST",
+    headers: {
+        Authorization: `Bearer ${userToken}`,
+        // Don't set Content-Type, let browser set it for FormData
+    },
+    body: formData,
+});
+
+const order = await orderResponse.json();
+console.log("Order created:", order.data.order.order_number);
+
+// 3. Check order status
+const orders = await fetch("/api/v1/orders", {
+    headers: { Authorization: `Bearer ${userToken}` },
+}).then((r) => r.json());
+
+// 4. Get specific order details
+const orderDetails = await fetch(`/api/v1/orders/${order.data.order.id}`, {
+    headers: { Authorization: `Bearer ${userToken}` },
+}).then((r) => r.json());
+
+// 5. Cancel order if needed (only if status is pending/payment_verification)
+if (orderDetails.data.status === "payment_verification") {
+    await fetch(`/api/v1/orders/${order.data.order.id}/cancel`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${userToken}` },
+    });
+}
 ```
