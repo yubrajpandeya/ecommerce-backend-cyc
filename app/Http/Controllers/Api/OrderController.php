@@ -50,7 +50,7 @@ class OrderController extends Controller
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
             'shipping_address' => 'required|string|max:500',
-            'phone_number' => 'required|string|max:20',
+            'phone_number' => 'required|string|max:10',
             'notes' => 'nullable|string|max:500',
             'payment_screenshot' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
