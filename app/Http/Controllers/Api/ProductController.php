@@ -34,6 +34,45 @@ class ProductController extends Controller
     }
 
     /**
+     * Get specific product details by slug.
+     */
+    public function show($slug): JsonResponse
+    {
+        // Find product by slug
+        $product = Product::query()
+            ->with(['category:id,name,slug'])
+            ->where('is_active', true)
+            ->where('slug', $slug)
+            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'stock', 'is_featured', 'is_upcoming', 'available_from', 'created_at', 'updated_at'])
+            ->first();
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found.',
+            ], 404);
+        }
+
+        // Add media URLs (multiple images if available)
+        $product->images = $product->getMedia('image')->map(function ($media) {
+            return [
+                'id' => $media->id,
+                'name' => $media->name,
+                'url' => $media->getUrl(),
+                'size' => $media->size,
+            ];
+        });
+
+        // Add main image URL for backward compatibility
+        $product->image_url = $product->getFirstMediaUrl('image');
+
+        return response()->json([
+            'success' => true,
+            'data' => $product,
+        ]);
+    }
+
+    /**
      * Search products by name or description.
      */
     public function search(Request $request): JsonResponse
