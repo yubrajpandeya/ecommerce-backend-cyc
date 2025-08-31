@@ -3,7 +3,7 @@
 ## Base URL
 
 ```
-https://api.chooseyourcart.com/api/v1
+http://localhost:8000/api/v1
 ```
 
 ## Response Format
@@ -14,6 +14,253 @@ All API responses follow this standard format:
 {
   "success": true,
   "data": {...}
+}
+```
+
+---
+
+## Authentication API
+
+### Register User
+
+**Endpoint:** `POST /auth/register`
+
+**Description:** Register a new user account.
+
+**Request Body:**
+
+```json
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123",
+    "password_confirmation": "password123"
+}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "message": "User registered successfully.",
+    "data": {
+        "user": {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "email_verified_at": null,
+            "created_at": "2024-01-15T10:30:00Z"
+        },
+        "token": "1|abc123def456ghi789",
+        "token_type": "Bearer"
+    }
+}
+```
+
+### Login User
+
+**Endpoint:** `POST /auth/login`
+
+**Description:** Authenticate user and return access token.
+
+**Request Body:**
+
+```json
+{
+    "email": "john@example.com",
+    "password": "password123"
+}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "message": "Login successful.",
+    "data": {
+        "user": {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "email_verified_at": null,
+            "created_at": "2024-01-15T10:30:00Z"
+        },
+        "token": "1|abc123def456ghi789",
+        "token_type": "Bearer"
+    }
+}
+```
+
+### Forgot Password
+
+**Endpoint:** `POST /auth/forgot-password`
+
+**Description:** Send password reset link to user's email.
+
+**Request Body:**
+
+```json
+{
+    "email": "john@example.com"
+}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "message": "Password reset link has been sent to your email address."
+}
+```
+
+### Reset Password
+
+**Endpoint:** `POST /auth/reset-password`
+
+**Description:** Reset user password using reset token.
+
+**Request Body:**
+
+```json
+{
+    "email": "john@example.com",
+    "token": "reset-token-here",
+    "password": "newpassword123",
+    "password_confirmation": "newpassword123"
+}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "message": "Password has been reset successfully."
+}
+```
+
+### Get User Profile
+
+**Endpoint:** `GET /auth/profile`
+
+**Description:** Get authenticated user's profile information.
+
+**Headers:**
+
+```
+Authorization: Bearer {token}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "data": {
+        "user": {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "email_verified_at": null,
+            "created_at": "2024-01-15T10:30:00Z",
+            "updated_at": "2024-01-15T10:30:00Z"
+        }
+    }
+}
+```
+
+### Update User Profile
+
+**Endpoint:** `PUT /auth/profile`
+
+**Description:** Update authenticated user's profile information.
+
+**Headers:**
+
+```
+Authorization: Bearer {token}
+```
+
+**Request Body:**
+
+```json
+{
+    "name": "John Updated",
+    "email": "john.updated@example.com"
+}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "message": "Profile updated successfully.",
+    "data": {
+        "user": {
+            "id": 1,
+            "name": "John Updated",
+            "email": "john.updated@example.com",
+            "email_verified_at": null,
+            "created_at": "2024-01-15T10:30:00Z",
+            "updated_at": "2024-01-16T08:45:00Z"
+        }
+    }
+}
+```
+
+### Change Password
+
+**Endpoint:** `POST /auth/change-password`
+
+**Description:** Change authenticated user's password.
+
+**Headers:**
+
+```
+Authorization: Bearer {token}
+```
+
+**Request Body:**
+
+```json
+{
+    "current_password": "currentpassword123",
+    "password": "newpassword123",
+    "password_confirmation": "newpassword123"
+}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "message": "Password changed successfully. Please login again with your new password."
+}
+```
+
+### Logout User
+
+**Endpoint:** `POST /auth/logout`
+
+**Description:** Revoke user's access token (logout).
+
+**Headers:**
+
+```
+Authorization: Bearer {token}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "message": "Logged out successfully."
 }
 ```
 
@@ -202,7 +449,7 @@ GET /products/upcoming?per_page=10
         "is_featured": true,
         "is_upcoming": true,
         "available_from": "2024-09-15",
-        "image_url": "https://api.chooseyourcart.com/storage/products/03M5X41JPD4LGTRDY6RE5ITZWV.jpg",
+        "image_url": "http://localhost:8000/storage/products/03M5X41JPD4LGTRDY6RE5ITZWV.jpg",
         "category": {
           "id": 1,
           "name": "Electronics",
@@ -210,13 +457,13 @@ GET /products/upcoming?per_page=10
         }
       }
     ],
-    "first_page_url": "https://api.chooseyourcart.com/api/v1/products/upcoming?page=1",
-    "from": 1,
-    "last_page": 2,
-    "last_page_url": "https://api.chooseyourcart.com/api/v1/products/upcoming?page=2",
-    "links": [...],
-    "next_page_url": "https://api.chooseyourcart.com/api/v1/products/upcoming?page=2",
-    "path": "https://api.chooseyourcart.com/api/v1/products/upcoming",
+            "first_page_url": "http://localhost:8000/api/v1/products/upcoming?page=1",
+        "from": 1,
+        "last_page": 2,
+        "last_page_url": "http://localhost:8000/api/v1/products/upcoming?page=2",
+        "links": [...],
+        "next_page_url": "http://localhost:8000/api/v1/products/upcoming?page=2",
+        "path": "http://localhost:8000/api/v1/products/upcoming",
     "per_page": 12,
     "prev_page_url": null,
     "to": 12,
@@ -248,7 +495,7 @@ GET /products/upcoming?per_page=10
             "title": "Electronics Tv"
             "link_url": "https://example.com/summer-sale",
             "position": 1,
-            "image_url": "https://api.chooseyourcart.com/storage/sliders/01K3V39HPB2JERPBX4PC3GRXTR.jpg"
+            "image_url": "http://localhost:8000/storage/sliders/01K3V39HPB2JERPBX4PC3GRXTR.jpg"
         }
     ]
 }
@@ -370,3 +617,68 @@ Error responses follow this format:
 7. **Categories**: Use `slug` for URL-friendly routing, `name` for display.
 
 8. **Stock**: Products with `stock: 0` should show "Out of Stock" messaging.
+
+9. **Authentication**: All protected endpoints require `Authorization: Bearer {token}` header. Store tokens securely in localStorage/sessionStorage.
+
+10. **Token Management**: After password change, user must login again as all existing tokens are revoked for security.
+
+11. **Password Reset**: The reset URL format is: `http://localhost:3000/reset-password?token={token}&email={email}`
+
+12. **Email Verification**: Currently not implemented but can be added later if needed.
+
+## Authentication Flow Examples
+
+### Complete Registration Flow
+
+```javascript
+// 1. Register user
+const registerResponse = await fetch("/api/v1/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        name: "John Doe",
+        email: "john@example.com",
+        password: "password123",
+        password_confirmation: "password123",
+    }),
+});
+
+const { token } = await registerResponse.json();
+
+// 2. Store token
+localStorage.setItem("authToken", token);
+
+// 3. Use token for authenticated requests
+const profileResponse = await fetch("/api/v1/auth/profile", {
+    headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+    },
+});
+```
+
+### Complete Password Reset Flow
+
+```javascript
+// 1. Request password reset
+await fetch("/api/v1/auth/forgot-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "john@example.com" }),
+});
+
+// 2. User clicks link in email, frontend extracts token and email from URL
+// URL: /reset-password?token=abc123&email=john@example.com
+
+// 3. Reset password
+await fetch("/api/v1/auth/reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        email: "john@example.com",
+        token: "abc123",
+        password: "newpassword123",
+        password_confirmation: "newpassword123",
+    }),
+});
+```
