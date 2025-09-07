@@ -17,13 +17,16 @@ class ProductController extends Controller
         $products = Product::query()
             ->with(['category:id,name,slug'])
             ->where('is_active', true)
-            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
+            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'sale_price', 'is_on_sale', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
             ->orderBy('created_at', 'desc')
             ->paginate($request->get('per_page', 12));
 
-        // Add media URLs
+        // Add media URLs and calculated prices
         $products->getCollection()->transform(function ($product) {
             $product->image_url = $product->getFirstMediaUrl('image');
+            $product->current_price = $product->getCurrentPrice();
+            $product->savings = $product->getSavings();
+            $product->discount_percentage = $product->getDiscountPercentage();
             return $product;
         });
 
@@ -43,7 +46,7 @@ class ProductController extends Controller
             ->with(['category:id,name,slug'])
             ->where('is_active', true)
             ->where('slug', $slug)
-            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'stock', 'is_featured', 'is_upcoming', 'available_from', 'created_at', 'updated_at'])
+            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'sale_price', 'is_on_sale', 'stock', 'is_featured', 'is_upcoming', 'available_from', 'created_at', 'updated_at'])
             ->first();
 
         if (!$product) {
@@ -65,6 +68,11 @@ class ProductController extends Controller
 
         // Add main image URL for backward compatibility
         $product->image_url = $product->getFirstMediaUrl('image');
+        
+        // Add calculated prices
+        $product->current_price = $product->getCurrentPrice();
+        $product->savings = $product->getSavings();
+        $product->discount_percentage = $product->getDiscountPercentage();
 
         return response()->json([
             'success' => true,
@@ -92,13 +100,16 @@ class ProductController extends Controller
             ->when($categoryId, function ($q) use ($categoryId) {
                 $q->where('category_id', $categoryId);
             })
-            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
+            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'sale_price', 'is_on_sale', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
             ->orderBy('name')
             ->paginate($request->get('per_page', 12));
 
-        // Add media URLs
+        // Add media URLs and calculated prices
         $products->getCollection()->transform(function ($product) {
             $product->image_url = $product->getFirstMediaUrl('image');
+            $product->current_price = $product->getCurrentPrice();
+            $product->savings = $product->getSavings();
+            $product->discount_percentage = $product->getDiscountPercentage();
             return $product;
         });
 
@@ -117,13 +128,16 @@ class ProductController extends Controller
             ->with(['category:id,name,slug'])
             ->where('is_active', true)
             ->where('is_featured', true)
-            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
+            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'sale_price', 'is_on_sale', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
             ->orderBy('created_at', 'desc')
             ->paginate($request->get('per_page', 8));
 
-        // Add media URLs
+        // Add media URLs and calculated prices
         $products->getCollection()->transform(function ($product) {
             $product->image_url = $product->getFirstMediaUrl('image');
+            $product->current_price = $product->getCurrentPrice();
+            $product->savings = $product->getSavings();
+            $product->discount_percentage = $product->getDiscountPercentage();
             return $product;
         });
 
@@ -142,13 +156,45 @@ class ProductController extends Controller
             ->with(['category:id,name,slug'])
             ->where('is_active', true)
             ->where('is_upcoming', true)
-            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
+            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'sale_price', 'is_on_sale', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
             ->orderBy('available_from', 'asc')
             ->paginate($request->get('per_page', 12));
 
-        // Add media URLs
+        // Add media URLs and calculated prices
         $products->getCollection()->transform(function ($product) {
             $product->image_url = $product->getFirstMediaUrl('image');
+            $product->current_price = $product->getCurrentPrice();
+            $product->savings = $product->getSavings();
+            $product->discount_percentage = $product->getDiscountPercentage();
+            return $product;
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $products,
+        ]);
+    }
+
+    /**
+     * Get products on sale.
+     */
+    public function onSale(Request $request): JsonResponse
+    {
+        $products = Product::query()
+            ->with(['category:id,name,slug'])
+            ->where('is_active', true)
+            ->where('is_on_sale', true)
+            ->whereNotNull('sale_price')
+            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'sale_price', 'is_on_sale', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->get('per_page', 12));
+
+        // Add media URLs and calculated prices
+        $products->getCollection()->transform(function ($product) {
+            $product->image_url = $product->getFirstMediaUrl('image');
+            $product->current_price = $product->getCurrentPrice();
+            $product->savings = $product->getSavings();
+            $product->discount_percentage = $product->getDiscountPercentage();
             return $product;
         });
 

@@ -38,6 +38,7 @@ Route::prefix('v1')->group(function () {
         Route::get('search', [ProductController::class, 'search']);
         Route::get('featured', [ProductController::class, 'featured']);
         Route::get('upcoming', [ProductController::class, 'upcoming']);
+        Route::get('on-sale', [ProductController::class, 'onSale']);
         Route::get('{slug}', [ProductController::class, 'show']);
         Route::get('/', [ProductController::class, 'index']);
     });
