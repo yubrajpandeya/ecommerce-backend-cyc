@@ -1,61 +1,319 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🛒 Choose Your Cart - Ecommerce Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern, feature-rich ecommerce backend API built with **Laravel 12** and **Filament v3 Admin Panel**. This project provides a complete backend solution for ecommerce applications with professional admin management capabilities.
 
-## About Laravel
+![Laravel](https://img.shields.io/badge/Laravel-12.0-red.svg)
+![Filament](https://img.shields.io/badge/Filament-3.3-orange.svg)
+![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)
+![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🎯 **Core Ecommerce Features**
+- **Product Management** with categories, pricing, and stock control
+- **Advanced Sale System** with sale pricing and discount calculations
+- **Order Management** with status tracking and payment verification
+- **User Authentication** with Laravel Sanctum
+- **Media Management** with Spatie Media Library
+- **Inventory Tracking** with low stock alerts
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 📊 **Professional Admin Panel**
+- **Modern Dashboard** with real-time analytics
+- **Sales Charts** and revenue tracking
+- **Stock Management** with quick restock actions
+- **Bulk Operations** for efficient management
+- **Advanced Filtering** and search capabilities
+- **Responsive Design** optimized for all devices
 
-## Learning Laravel
+### 🔌 **RESTful API**
+- **Complete API endpoints** for all ecommerce operations
+- **Authentication system** with API tokens
+- **Pagination support** for large datasets
+- **Search functionality** across products
+- **Category-based filtering**
+- **Sale price calculations** included in responses
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🚀 Quick Start
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Prerequisites
+- PHP 8.2 or higher
+- Composer
+- MySQL 8.0 or higher
+- Node.js & NPM
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Installation
 
-## Laravel Sponsors
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/theanupambista/ecommerce-backend-cyc.git
+   cd ecommerce-backend-cyc
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
 
-### Premium Partners
+3. **Install Node.js dependencies**
+   ```bash
+   npm install
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+4. **Environment Setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-## Contributing
+5. **Configure Database**
+   Edit your `.env` file with your database credentials:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=your_database_name
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+6. **Run Migrations & Seeders**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-## Code of Conduct
+7. **Build Frontend Assets**
+   ```bash
+   npm run build
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+8. **Start the Development Server**
+   ```bash
+   php artisan serve
+   ```
 
-## Security Vulnerabilities
+## 🎯 Usage
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Admin Panel Access
+- **URL**: `http://localhost:8000/admin`
+- **Email**: `admin@chooseyourcart.com`
+- **Password**: `33Uvus3]L@PT`
 
-## License
+### API Base URL
+```
+http://localhost:8000/api/v1
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📡 API Documentation
+
+### Authentication Endpoints
+```http
+POST /api/v1/auth/register          # Register new user
+POST /api/v1/auth/login             # User login
+POST /api/v1/auth/logout            # User logout
+GET  /api/v1/auth/profile           # Get user profile
+```
+
+### Product Endpoints
+```http
+GET    /api/v1/products             # Get all products
+GET    /api/v1/products/featured    # Get featured products
+GET    /api/v1/products/on-sale     # Get products on sale
+GET    /api/v1/products/upcoming    # Get upcoming products
+GET    /api/v1/products/search      # Search products
+GET    /api/v1/products/{slug}      # Get single product
+```
+
+### Category Endpoints
+```http
+GET    /api/v1/categories           # Get all categories
+GET    /api/v1/categories/{id}/products  # Get products by category
+```
+
+### Order Endpoints (Authentication Required)
+```http
+GET    /api/v1/orders               # Get user orders
+POST   /api/v1/orders               # Create new order
+GET    /api/v1/orders/{id}          # Get single order
+POST   /api/v1/orders/{id}/cancel   # Cancel order
+```
+
+### Sample API Response
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Premium Smartphone",
+    "slug": "premium-smartphone",
+    "description": "Latest flagship smartphone...",
+    "price": 89999.00,
+    "sale_price": 79999.00,
+    "is_on_sale": true,
+    "current_price": 79999.00,
+    "savings": 10000.00,
+    "discount_percentage": 11,
+    "stock": 50,
+    "category": {
+      "id": 1,
+      "name": "Electronics",
+      "slug": "electronics"
+    },
+    "image_url": "http://localhost:8000/storage/products/image.jpg"
+  }
+}
+```
+
+## 🏗️ Architecture
+
+### Tech Stack
+- **Backend**: Laravel 12 with PHP 8.2+
+- **Admin Panel**: Filament v3
+- **Frontend Assets**: Vite + Tailwind CSS v4
+- **Database**: MySQL with Eloquent ORM
+- **Authentication**: Laravel Sanctum
+- **Media**: Spatie Media Library
+- **API**: RESTful with JSON responses
+
+### Project Structure
+```
+├── app/
+│   ├── Filament/           # Admin panel resources & widgets
+│   ├── Http/Controllers/   # API controllers
+│   ├── Models/             # Eloquent models
+│   └── Providers/          # Service providers
+├── database/
+│   ├── migrations/         # Database migrations
+│   ├── seeders/           # Database seeders
+│   └── factories/         # Model factories
+├── routes/
+│   ├── api.php            # API routes
+│   └── web.php            # Web routes
+└── resources/
+    ├── views/             # Blade templates
+    ├── css/               # Stylesheets
+    └── js/                # JavaScript files
+```
+
+## 🎨 Admin Panel Features
+
+### Dashboard Analytics
+- **Sales Overview**: Real-time revenue and order statistics
+- **Performance Charts**: 30-day sales trends
+- **Stock Alerts**: Low inventory notifications
+- **Top Products**: Best-selling items analysis
+
+### Product Management
+- **Rich Product Editor** with image upload
+- **Automatic Slug Generation**
+- **Sale Price Management** with discount calculations
+- **Stock Control** with low stock alerts
+- **Bulk Operations** for mass updates
+- **Advanced Filtering** by category, status, stock level
+
+### Order Management
+- **Order Status Tracking**
+- **Payment Verification System**
+- **Customer Information Display**
+- **Order History and Analytics**
+
+## 🔧 Configuration
+
+### Environment Variables
+Key environment variables for configuration:
+
+```env
+# Application
+APP_NAME="Choose Your Cart"
+APP_ENV=production
+APP_URL=https://your-domain.com
+
+# Database
+DB_CONNECTION=mysql
+DB_HOST=your-database-host
+DB_DATABASE=your-database-name
+DB_USERNAME=your-username
+DB_PASSWORD=your-password
+
+# Mail Configuration
+MAIL_MAILER=smtp
+MAIL_HOST=your-smtp-host
+MAIL_PORT=587
+MAIL_USERNAME=your-email
+MAIL_PASSWORD=your-password
+
+# File Storage
+FILESYSTEM_DISK=public
+```
+
+## 🚀 Deployment
+
+### Production Setup
+1. **Server Requirements**
+   - PHP 8.2+ with required extensions
+   - MySQL 8.0+
+   - Nginx or Apache
+   - Composer
+   - Node.js & NPM
+
+2. **Deployment Steps**
+   ```bash
+   # Clone and setup
+   git clone https://github.com/theanupambista/ecommerce-backend-cyc.git
+   cd ecommerce-backend-cyc
+   composer install --no-dev --optimize-autoloader
+   npm install && npm run build
+   
+   # Configure environment
+   cp .env.example .env
+   # Edit .env with production settings
+   php artisan key:generate
+   
+   # Database setup
+   php artisan migrate --force
+   php artisan db:seed --force
+   
+   # Optimize for production
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Developer
+
+**Built with ❤️ by [Yubraj Pandeya](https://github.com/yubrajpandeya)**
+
+- **GitHub**: [@yubrajpandeya](https://github.com/yubrajpandeya)
+- **Email**: [Contact Developer](mailto:yubrajpandeya@example.com)
+
+## 🙏 Acknowledgments
+
+- [Laravel](https://laravel.com) - The PHP Framework for Web Artisans
+- [Filament](https://filamentphp.com) - Beautiful Admin Panel for Laravel
+- [Tailwind CSS](https://tailwindcss.com) - Utility-first CSS Framework
+- [Spatie Media Library](https://spatie.be/docs/laravel-medialibrary) - Media Management
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+
+1. Check the [Issues](https://github.com/theanupambista/ecommerce-backend-cyc/issues) page
+2. Create a new issue if needed
+3. Contact the developer
+
+---
+
+**⭐ Star this repository if you found it helpful!**
