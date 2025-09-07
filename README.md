@@ -168,6 +168,7 @@ POST   /api/v1/orders/{id}/cancel   # Cancel order
 }
 ```
 
+<<<<<<< HEAD
 ### Order Creation Response
 ```json
 {
@@ -189,6 +190,8 @@ POST   /api/v1/orders/{id}/cancel   # Cancel order
 }
 ```
 
+=======
+>>>>>>> 8fb3cbd780c8893cdc8ae536a286d985995a7a79
 ## 🏗️ Architecture
 
 ### Tech Stack
