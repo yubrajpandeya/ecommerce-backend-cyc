@@ -22,6 +22,9 @@ class Order extends Model implements HasMedia
         'order_number',
         'quantity',
         'unit_price',
+        'original_price',
+        'discount_amount',
+        'was_on_sale',
         'total_amount',
         'status',
         'shipping_address',
@@ -30,6 +33,11 @@ class Order extends Model implements HasMedia
         'payment_verified_at',
         'verified_by',
         'admin_notes',
+        'payment_method',
+        'full_name',
+        'email',
+        'city',
+        'postal_code',
     ];
 
     protected function casts(): array
@@ -37,7 +45,10 @@ class Order extends Model implements HasMedia
         return [
             'quantity' => 'integer',
             'unit_price' => 'decimal:2',
+            'original_price' => 'decimal:2',
+            'discount_amount' => 'decimal:2',
             'total_amount' => 'decimal:2',
+            'was_on_sale' => 'boolean',
             'payment_verified_at' => 'datetime',
         ];
     }
@@ -89,5 +100,33 @@ class Order extends Model implements HasMedia
             'cancelled' => 'red',
             default => 'gray',
         };
+    }
+
+    /**
+     * Get total savings for this order
+     */
+    public function getTotalSavings(): float
+    {
+        return $this->was_on_sale ? ($this->discount_amount * $this->quantity) : 0;
+    }
+
+    /**
+     * Get the percentage discount for this order
+     */
+    public function getDiscountPercentage(): int
+    {
+        if (!$this->was_on_sale || !$this->original_price || $this->original_price <= 0) {
+            return 0;
+        }
+        
+        return (int) round(($this->discount_amount / $this->original_price) * 100);
+    }
+
+    /**
+     * Get the original total amount (before discount)
+     */
+    public function getOriginalTotalAmount(): float
+    {
+        return $this->original_price ? ($this->original_price * $this->quantity) : $this->total_amount;
     }
 }

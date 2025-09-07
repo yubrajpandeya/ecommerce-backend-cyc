@@ -54,10 +54,29 @@ class OrderResource extends Resource
                             ->required(),
 
                         Forms\Components\TextInput::make('unit_price')
-                            ->label('Unit Price')
+                            ->label('Unit Price (Final)')
                             ->numeric()
                             ->prefix('Rs.')
                             ->required(),
+
+                        Forms\Components\TextInput::make('original_price')
+                            ->label('Original Price')
+                            ->numeric()
+                            ->prefix('Rs.')
+                            ->disabled()
+                            ->dehydrated(false),
+
+                        Forms\Components\TextInput::make('discount_amount')
+                            ->label('Discount Amount')
+                            ->numeric()
+                            ->prefix('Rs.')
+                            ->disabled()
+                            ->dehydrated(false),
+
+                        Forms\Components\Toggle::make('was_on_sale')
+                            ->label('Was on Sale')
+                            ->disabled()
+                            ->dehydrated(false),
 
                         Forms\Components\TextInput::make('total_amount')
                             ->label('Total Amount')
@@ -69,16 +88,39 @@ class OrderResource extends Resource
 
                 Forms\Components\Section::make('Shipping Information')
                     ->schema([
+                        Forms\Components\TextInput::make('full_name')
+                            ->label('Full Name')
+                            ->required(),
+
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->required(),
+
                         Forms\Components\Textarea::make('shipping_address')
                             ->required()
                             ->columnSpanFull(),
 
+                        Forms\Components\TextInput::make('city')
+                            ->required(),
+
+                        Forms\Components\TextInput::make('postal_code')
+                            ->label('Postal Code')
+                            ->required(),
+
                         Forms\Components\TextInput::make('phone_number')
+                            ->required(),
+
+                        Forms\Components\Select::make('payment_method')
+                            ->label('Payment Method')
+                            ->options([
+                                'cod' => 'Cash on Delivery',
+                                'qr_payment' => 'QR Payment',
+                            ])
                             ->required(),
 
                         Forms\Components\Textarea::make('notes')
                             ->columnSpanFull(),
-                    ]),
+                    ])->columns(2),
 
                 Forms\Components\Section::make('Order Status & Payment')
                     ->schema([
@@ -101,7 +143,8 @@ class OrderResource extends Resource
                             ->image()
                             ->imageEditor()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])
-                            ->maxSize(2048),
+                            ->maxSize(2048)
+                            ->visible(fn (Forms\Get $get): bool => $get('payment_method') === 'qr_payment'),
 
                         Forms\Components\Textarea::make('admin_notes')
                             ->label('Admin Notes')
@@ -129,6 +172,28 @@ class OrderResource extends Resource
                     ->searchable()
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('full_name')
+                    ->label('Full Name')
+                    ->searchable()
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Order Email')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('city')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\BadgeColumn::make('payment_method')
+                    ->label('Payment Method')
+                    ->colors([
+                        'success' => 'cod',
+                        'info' => 'qr_payment',
+                    ])
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('product.name')
                     ->label('Product')
                     ->searchable()
@@ -137,6 +202,27 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('unit_price')
+                    ->label('Final Price')
+                    ->money('INR')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('original_price')
+                    ->label('Original Price')
+                    ->money('INR')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('discount_amount')
+                    ->label('Discount')
+                    ->money('INR')
+                    ->toggleable()
+                    ->color('success'),
+
+                Tables\Columns\IconColumn::make('was_on_sale')
+                    ->label('On Sale')
+                    ->boolean()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('total_amount')
                     ->label('Total')

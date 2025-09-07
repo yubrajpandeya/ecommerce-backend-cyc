@@ -20,7 +20,12 @@ class OrderController extends Controller
     {
         $orders = auth()->user()->orders()
             ->with(['product.category:id,name,slug'])
-            ->select(['id', 'order_number', 'product_id', 'quantity', 'unit_price', 'total_amount', 'status', 'created_at', 'payment_verified_at','shipping_address','phone_number'])
+            ->select([
+                'id', 'order_number', 'product_id', 'quantity', 'unit_price', 'original_price', 
+                'discount_amount', 'was_on_sale', 'total_amount', 'status', 'created_at', 
+                'payment_verified_at', 'shipping_address', 'phone_number', 'payment_method', 
+                'full_name', 'email', 'city', 'postal_code', 'notes'
+            ])
             ->orderBy('created_at', 'desc')
             ->paginate($request->get('per_page', 10));
 
@@ -31,6 +36,11 @@ class OrderController extends Controller
             $order->product_image = $order->product->getFirstMediaUrl('image');
             $order->category_name = $order->product->category->name;
             $order->payment_screenshot_url = $order->getFirstMediaUrl('payment_screenshot');
+            
+            // Add discount information for display
+            $order->savings_per_unit = $order->was_on_sale ? $order->discount_amount : 0;
+            $order->total_savings = $order->was_on_sale ? ($order->discount_amount * $order->quantity) : 0;
+            
             unset($order->product);
             return $order;
         });
@@ -47,12 +57,17 @@ class OrderController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'product_id' => 'required|exists:products,id',
+            'product_id' => 'required|integer|exists:products,id',
             'quantity' => 'required|integer|min:1',
-            'shipping_address' => 'required|string|max:500',
-            'phone_number' => 'required|string|max:10',
-            'notes' => 'nullable|string|max:500',
-            'payment_screenshot' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'shipping_address' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:20',
+            'payment_method' => 'required|string|in:cod,qr_payment',
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'city' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:10',
+            'notes' => 'nullable|string|max:1000',
+            'payment_screenshot' => 'required_if:payment_method,qr_payment|file|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -82,24 +97,49 @@ class OrderController extends Controller
 
         DB::beginTransaction();
         try {
+            // Determine initial status based on payment method
+            $initialStatus = $request->payment_method === 'cod' ? 'confirmed' : 'payment_verification';
+            
+            // Get the current price (sale price if on sale, regular price otherwise)
+            $currentPrice = $product->getCurrentPrice();
+            $originalPrice = $product->price;
+            $discountAmount = $product->getSavings();
+            $wasOnSale = $product->is_on_sale && $product->sale_price;
+            
             // Create the order
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'product_id' => $product->id,
                 'order_number' => Order::generateOrderNumber(),
                 'quantity' => $request->quantity,
-                'unit_price' => $product->price,
-                'total_amount' => $product->price * $request->quantity,
-                'status' => 'payment_verification',
+                'unit_price' => $currentPrice,
+                'original_price' => $originalPrice,
+                'discount_amount' => $discountAmount,
+                'was_on_sale' => $wasOnSale,
+                'total_amount' => $currentPrice * $request->quantity,
+                'status' => $initialStatus,
                 'shipping_address' => $request->shipping_address,
                 'phone_number' => $request->phone_number,
                 'notes' => $request->notes,
+                'payment_method' => $request->payment_method,
+                'full_name' => $request->full_name,
+                'email' => $request->email,
+                'city' => $request->city,
+                'postal_code' => $request->postal_code,
             ]);
 
-            // Handle payment screenshot upload
-            if ($request->hasFile('payment_screenshot')) {
+            // Handle payment screenshot upload (only for QR payments)
+            if ($request->payment_method === 'qr_payment' && $request->hasFile('payment_screenshot')) {
                 $order->addMediaFromRequest('payment_screenshot')
                     ->toMediaCollection('payment_screenshot');
+            }
+
+            // For COD orders, mark as payment verified
+            if ($request->payment_method === 'cod') {
+                $order->update([
+                    'payment_verified_at' => now(),
+                    'verified_by' => auth()->id(), // System verification for COD
+                ]);
             }
 
             // Reduce product stock
@@ -107,15 +147,24 @@ class OrderController extends Controller
 
             DB::commit();
 
+            $message = $request->payment_method === 'cod' 
+                ? 'Order created successfully with Cash on Delivery.'
+                : 'Order created successfully. Please wait for payment verification.';
+
             return response()->json([
                 'success' => true,
-                'message' => 'Order created successfully. Please wait for payment verification.',
+                'message' => $message,
                 'data' => [
                     'order' => [
                         'id' => $order->id,
                         'order_number' => $order->order_number,
+                        'unit_price' => $order->unit_price,
+                        'original_price' => $order->original_price,
+                        'discount_amount' => $order->discount_amount,
+                        'was_on_sale' => $order->was_on_sale,
                         'total_amount' => $order->total_amount,
                         'status' => $order->status,
+                        'payment_method' => $order->payment_method,
                         'payment_screenshot_url' => $order->getFirstMediaUrl('payment_screenshot'),
                     ],
                 ],
