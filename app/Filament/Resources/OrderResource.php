@@ -214,8 +214,17 @@ class OrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('discount_amount')
-                    ->label('Discount')
+                    ->label('Discount per Unit')
                     ->money('INR')
+                    ->toggleable()
+                    ->color('success'),
+
+                Tables\Columns\TextColumn::make('total_savings')
+                    ->label('Total Savings')
+                    ->money('INR')
+                    ->state(function (Order $record): float {
+                        return $record->discount_amount * $record->quantity;
+                    })
                     ->toggleable()
                     ->color('success'),
 
