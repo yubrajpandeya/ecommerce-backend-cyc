@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Schema;
 
 class CategoryResource extends Resource
 {
@@ -62,11 +63,16 @@ class CategoryResource extends Resource
                     ->copyable()
                     ->copyMessage('Slug copied!')
                     ->color('gray'),
-                Tables\Columns\TextColumn::make('products_count')
+                // Guard product counts to avoid querying DB during boot if DB/tables are missing
+                (Schema::hasTable('products') ? Tables\Columns\TextColumn::make('products_count')
                     ->label('Products')
                     ->counts('products')
                     ->badge()
-                    ->color('primary'),
+                    ->color('primary') : Tables\Columns\TextColumn::make('products_count')
+                    ->label('Products')
+                    ->badge()
+                    ->color('primary')
+                    ->default('N/A')),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('Status')
                     ->boolean()

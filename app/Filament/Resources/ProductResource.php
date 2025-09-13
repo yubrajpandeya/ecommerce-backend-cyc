@@ -14,6 +14,7 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Schema;
 
 class ProductResource extends Resource
 {
@@ -27,18 +28,31 @@ class ProductResource extends Resource
 
     public static function form(Form $form): Form
     {
+        // Prepare the basic information fields separately so we can return an
+        // array of Component instances and merge them into the section schema.
+        $basicInformationFields = (function () {
+            $name = Forms\Components\TextInput::make('name')
+                ->required()
+                ->live(onBlur: true);
+
+            if (Schema::hasColumn('products', 'slug')) {
+                $name = $name->afterStateUpdated(fn (string $context, $state, Forms\Set $set) => $context === 'create' ? $set('slug', \Illuminate\Support\Str::slug($state)) : null);
+
+                $slug = Forms\Components\TextInput::make('slug')
+                    ->required()
+                    ->unique(Product::class, 'slug', ignoreRecord: true)
+                    ->helperText('URL-friendly version of the name');
+
+                return [$name, $slug];
+            }
+
+            return [$name];
+        })();
+
         return $form
             ->schema([
                 Forms\Components\Section::make('Basic Information')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn (string $context, $state, Forms\Set $set) => $context === 'create' ? $set('slug', \Illuminate\Support\Str::slug($state)) : null),
-                        Forms\Components\TextInput::make('slug')
-                            ->required()
-                            ->unique(Product::class, 'slug', ignoreRecord: true)
-                            ->helperText('URL-friendly version of the name'),
+                    ->schema(array_merge($basicInformationFields, [
                         Forms\Components\Select::make('category_id')
                             ->relationship('category', 'name')
                             ->required()
@@ -48,17 +62,20 @@ class ProductResource extends Resource
                                 Forms\Components\Textarea::make('description'),
                                 Forms\Components\Toggle::make('is_active')->default(true),
                             ]),
-                        Forms\Components\RichEditor::make('description')
-                            ->columnSpanFull()
-                            ->toolbarButtons([
-                                'bold',
-                                'italic',
-                                'underline',
-                                'bulletList',
-                                'orderedList',
-                                'link',
-                            ]),
-                    ])
+                        // Include description only if the column exists in the DB
+                        ...(Schema::hasColumn('products', 'description') ? [
+                            Forms\Components\RichEditor::make('description')
+                                ->columnSpanFull()
+                                ->toolbarButtons([
+                                    'bold',
+                                    'italic',
+                                    'underline',
+                                    'bulletList',
+                                    'orderedList',
+                                    'link',
+                                ]),
+                        ] : []),
+                    ]))
                     ->columns(2),
                     
                 Forms\Components\Section::make('Pricing & Inventory')
@@ -79,22 +96,32 @@ class ProductResource extends Resource
                             ->helperText('Enable to set a sale price for this product')
                             ->live()
                             ->default(false),
-                        Forms\Components\TextInput::make('sale_price')
-                            ->label('Sale Price')
-                            ->numeric()
-                            ->prefix('Rs.')
-                            ->visible(fn (Forms\Get $get): bool => $get('is_on_sale'))
-                            ->required(fn (Forms\Get $get): bool => $get('is_on_sale'))
-                            ->minValue(0)
-                            ->rules([
-                                fn (Forms\Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
-                                    $regularPrice = $get('price');
-                                    if ($get('is_on_sale') && $value && $regularPrice && (float) $value >= (float) $regularPrice) {
-                                        $fail('Sale price must be less than the regular price.');
-                                    }
-                                },
-                            ])
-                            ->helperText('Sale price must be less than regular price'),
+                        // Only show sale price and is_on_sale controls if DB columns exist
+                        ...(Schema::hasColumn('products', 'is_on_sale') ? [
+                            Forms\Components\Toggle::make('is_on_sale')
+                                ->label('On Sale')
+                                ->helperText('Enable to set a sale price for this product')
+                                ->live()
+                                ->default(false),
+                        ] : []),
+                        ...(Schema::hasColumn('products', 'sale_price') ? [
+                            Forms\Components\TextInput::make('sale_price')
+                                ->label('Sale Price')
+                                ->numeric()
+                                ->prefix('Rs.')
+                                ->visible(fn (Forms\Get $get): bool => $get('is_on_sale'))
+                                ->required(fn (Forms\Get $get): bool => $get('is_on_sale'))
+                                ->minValue(0)
+                                ->rules([
+                                    fn (Forms\Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
+                                        $regularPrice = $get('price');
+                                        if ($get('is_on_sale') && $value && $regularPrice && (float) $value >= (float) $regularPrice) {
+                                            $fail('Sale price must be less than the regular price.');
+                                        }
+                                    },
+                                ])
+                                ->helperText('Sale price must be less than regular price'),
+                        ] : []),
                     ])
                     ->columns(2),
                     
@@ -148,8 +175,11 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
+                // Show slug column only when present in the DB schema
+                ...(Schema::hasColumn('products', 'slug') ? [
+                    Tables\Columns\TextColumn::make('slug')
+                        ->searchable(),
+                ] : []),
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('image')
                     ->label('Image'),
@@ -179,9 +209,12 @@ class ProductResource extends Resource
                     ->badge()
                     ->color('warning')
                     ->visible(fn (?Product $record): bool => $record ? $record->is_on_sale : false),
-                Tables\Columns\TextColumn::make('stock')
-                    ->numeric()
-                    ->sortable(),
+                // Stock column may be missing on some DBs; show only if present
+                ...(Schema::hasColumn('products', 'stock') ? [
+                    Tables\Columns\TextColumn::make('stock')
+                        ->numeric()
+                        ->sortable(),
+                ] : []),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('is_featured')

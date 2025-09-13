@@ -130,8 +130,17 @@ class OrderController extends Controller
 
             // Handle payment screenshot upload (only for QR payments)
             if ($request->payment_method === 'qr_payment' && $request->hasFile('payment_screenshot')) {
-                $order->addMediaFromRequest('payment_screenshot')
-                    ->toMediaCollection('payment_screenshot');
+                try {
+                    $order->addMediaFromRequest('payment_screenshot')
+                        ->toMediaCollection('payment_screenshot');
+                } catch (\Throwable $mediaEx) {
+                    // Log media upload-specific error and rethrow to be handled by outer catch
+                    \Log::error('OrderController@store media upload failed', [
+                        'order_id' => $order->id ?? null,
+                        'exception' => $mediaEx,
+                    ]);
+                    throw $mediaEx;
+                }
             }
 
             // For COD orders, mark as payment verified
@@ -170,8 +179,23 @@ class OrderController extends Controller
                 ],
             ], 201);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollback();
+            // Log the full exception for debugging
+            \Log::error('OrderController@store failed', [
+                'exception' => $e,
+                'request' => $request->all(),
+            ]);
+
+            // If debug mode is enabled, return the real error to help diagnose
+            if (config('app.debug')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to create order: ' . $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ], 500);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create order. Please try again.',

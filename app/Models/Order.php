@@ -78,9 +78,23 @@ class Order extends Model implements HasMedia
      */
     public static function generateOrderNumber(): string
     {
+        $attempts = 0;
         do {
             $orderNumber = 'ORD-' . date('Ymd') . '-' . strtoupper(substr(md5(microtime()), 0, 6));
-        } while (self::where('order_number', $orderNumber)->exists());
+
+            // If orders table doesn't have order_number column (older DBs), skip exists() check
+            if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'order_number')) {
+                break;
+            }
+
+            $exists = self::where('order_number', $orderNumber)->exists();
+            $attempts++;
+        } while ($exists && $attempts < 10);
+
+        // if somehow still exists after attempts, append a random suffix
+        if (isset($exists) && $exists) {
+            $orderNumber .= '-' . strtoupper(\Illuminate\Support\Str::random(4));
+        }
 
         return $orderNumber;
     }

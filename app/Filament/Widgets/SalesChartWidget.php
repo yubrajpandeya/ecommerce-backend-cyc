@@ -6,6 +6,9 @@ use App\Models\Order;
 use App\Models\Product;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SalesChartWidget extends ChartWidget
 {
@@ -98,15 +101,35 @@ class SalesChartWidget extends ChartWidget
         $salesData = [];
         $ordersData = [];
 
-        for ($i = 29; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i);
-            $labels[] = $date->format('M j');
-            
-            $dailySales = Order::whereDate('created_at', $date)->sum('total_amount');
-            $dailyOrders = Order::whereDate('created_at', $date)->count();
-            
-            $salesData[] = (float) $dailySales;
-            $ordersData[] = $dailyOrders;
+        try {
+            if (! Schema::hasTable('orders')) {
+                // return zeroed data
+                for ($i = 29; $i >= 0; $i--) {
+                    $date = Carbon::now()->subDays($i);
+                    $labels[] = $date->format('M j');
+                    $salesData[] = 0.0;
+                    $ordersData[] = 0;
+                }
+            } else {
+                for ($i = 29; $i >= 0; $i--) {
+                    $date = Carbon::now()->subDays($i);
+                    $labels[] = $date->format('M j');
+                    
+                    $dailySales = Order::whereDate('created_at', $date)->sum('total_amount');
+                    $dailyOrders = Order::whereDate('created_at', $date)->count();
+                    
+                    $salesData[] = (float) $dailySales;
+                    $ordersData[] = $dailyOrders;
+                }
+            }
+        } catch (Throwable $e) {
+            Log::error('SalesChartWidget: DB unavailable or query failed: ' . $e->getMessage());
+            for ($i = 29; $i >= 0; $i--) {
+                $date = Carbon::now()->subDays($i);
+                $labels[] = $date->format('M j');
+                $salesData[] = 0.0;
+                $ordersData[] = 0;
+            }
         }
 
         return [

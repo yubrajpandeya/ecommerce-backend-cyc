@@ -47,9 +47,31 @@ class CategoryController extends Controller
             ], 404);
         }
 
+        // Build select list defensively: only include columns that exist in DB.
+        $select = ['id', 'category_id', 'name', 'slug'];
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('products', 'description')) {
+            $select[] = 'description';
+        }
+        if (\Illuminate\Support\Facades\Schema::hasColumn('products', 'price')) {
+            $select[] = 'price';
+        }
+        if (\Illuminate\Support\Facades\Schema::hasColumn('products', 'stock')) {
+            $select[] = 'stock';
+        }
+        if (\Illuminate\Support\Facades\Schema::hasColumn('products', 'is_featured')) {
+            $select[] = 'is_featured';
+        }
+        if (\Illuminate\Support\Facades\Schema::hasColumn('products', 'is_upcoming')) {
+            $select[] = 'is_upcoming';
+        }
+        if (\Illuminate\Support\Facades\Schema::hasColumn('products', 'available_from')) {
+            $select[] = 'available_from';
+        }
+
         $products = $category->products()
             ->where('is_active', true)
-            ->select(['id', 'category_id', 'name', 'slug', 'description', 'price', 'stock', 'is_featured', 'is_upcoming', 'available_from'])
+            ->select($select)
             ->orderBy('created_at', 'desc')
             ->paginate($request->get('per_page', 12));
 

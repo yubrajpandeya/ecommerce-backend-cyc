@@ -86,7 +86,9 @@ return [
     */
 
     'batching' => [
-        'database' => env('DB_CONNECTION', 'sqlite'),
+        // Use the application's DB connection for batching; prefer mysql when
+        // DB_CONNECTION is not set to avoid accidentally falling back to sqlite.
+        'database' => env('DB_CONNECTION', config('database.default', 'mysql')),
         'table' => 'job_batches',
     ],
 
@@ -105,7 +107,7 @@ return [
 
     'failed' => [
         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
-        'database' => env('DB_CONNECTION', 'sqlite'),
+        'database' => env('DB_CONNECTION', config('database.default', 'mysql')),
         'table' => 'failed_jobs',
     ],
 

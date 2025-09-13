@@ -6,6 +6,9 @@ use App\Models\Product;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class LowStockProductsWidget extends BaseWidget
 {
@@ -18,12 +21,21 @@ class LowStockProductsWidget extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(
-                Product::query()
-                    ->where('is_active', true)
-                    ->where('stock', '<=', 10)
-                    ->orderBy('stock', 'asc')
-            )
+            ->query((function () {
+                try {
+                    if (! Schema::hasTable('products')) {
+                        return Product::query()->whereRaw('1 = 0');
+                    }
+
+                    return Product::query()
+                        ->where('is_active', true)
+                        ->where('stock', '<=', 10)
+                        ->orderBy('stock', 'asc');
+                } catch (Throwable $e) {
+                    Log::error('LowStockProductsWidget: DB unavailable: ' . $e->getMessage());
+                    return Product::query()->whereRaw('1 = 0');
+                }
+            })())
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()

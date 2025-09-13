@@ -8,6 +8,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class TopProductsWidget extends BaseWidget
 {
@@ -21,18 +24,30 @@ class TopProductsWidget extends BaseWidget
     {
         return $table
             ->query(
-                Product::query()
-                    ->withCount(['orders' => function (Builder $query) {
-                        $query->whereMonth('created_at', now()->month)
-                              ->whereYear('created_at', now()->year);
-                    }])
-                    ->withSum(['orders' => function (Builder $query) {
-                        $query->whereMonth('created_at', now()->month)
-                              ->whereYear('created_at', now()->year);
-                    }], 'total_amount')
-                    ->where('is_active', true)
-                    ->orderBy('orders_count', 'desc')
-                    ->limit(10)
+                // Guard against missing DB or tables
+                (function () {
+                    try {
+                        if (! Schema::hasTable('products')) {
+                            return Product::query()->whereRaw('1 = 0');
+                        }
+
+                        return Product::query()
+                            ->withCount(['orders' => function (Builder $query) {
+                                $query->whereMonth('created_at', now()->month)
+                                      ->whereYear('created_at', now()->year);
+                            }])
+                            ->withSum(['orders' => function (Builder $query) {
+                                $query->whereMonth('created_at', now()->month)
+                                      ->whereYear('created_at', now()->year);
+                            }], 'total_amount')
+                            ->where('is_active', true)
+                            ->orderBy('orders_count', 'desc')
+                            ->limit(10);
+                    } catch (Throwable $e) {
+                        Log::error('TopProductsWidget: DB unavailable: ' . $e->getMessage());
+                        return Product::query()->whereRaw('1 = 0');
+                    }
+                })()
             )
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
